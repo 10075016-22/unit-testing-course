@@ -15,8 +15,10 @@
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "happy-dom": "^17.1.8",
+    "pinia": "2.0.30",
     "vite": "^6.2.0",
     "vitest": "^3.0.7"
   }

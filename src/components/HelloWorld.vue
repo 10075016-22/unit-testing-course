@@ -1,26 +1,12 @@
-<script setup>
-import { ref, watch } from 'vue'
-import axios from 'axios'
-
-const props = defineProps({
-  msg: String,
-})
-
-const count = ref(0)
-
-const increment = () => {
-  count.value++
-}
-
-watch(() => props.msg, (value) => {
-  axios.get('https://httpbin.org/get')
-})
-</script>
-
 <template>
   <h1>{{ msg }}</h1>
+  <title-component 
+    v-show="msg" 
+    :value="prefixedMessage" 
+    @on-mounted="handleTitleMounted"
+  />
 
-  <div class="card">
+  <div class="card" :class="{'card-success': !msg}" @click="handleCardClick">
     <button type="button" @click="increment">count is {{ count }}</button>
     <p>
       Edit
@@ -42,11 +28,40 @@ watch(() => props.msg, (value) => {
       >Vue Docs Scaling up Guide</a
     >.
   </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
 </template>
 
-<style scoped>
-.read-the-docs {
-  color: #888;
+<script setup lang="ts">
+import TitleComponent from './TitleComponent.vue'
+import { computed, ref, watch,defineProps } from 'vue'
+import axios from 'axios'
+
+export interface HelloWorldProps {
+  msg?: String
 }
-</style>
+
+
+const props = defineProps<HelloWorldProps>()
+const emit = defineEmits<{
+  (e: 'card-clicked'): void
+  (e: 'up', count: number): void
+}>()
+const prefixedMessage = computed(() => `My title: ${props.msg}`)
+const count = ref(0)
+
+const increment = () => {
+  count.value++
+}
+
+const handleTitleMounted = () => {
+  emit('up', count.value)
+}
+
+const handleCardClick = () => {
+  emit('card-clicked');
+}
+
+watch(() => props.msg, (value) => {
+  if(!value) return;
+  axios.get('https://httpbin.org/get')
+})
+</script>
